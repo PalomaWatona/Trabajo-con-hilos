@@ -1,11 +1,38 @@
+import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.Random;
 
-public class Main {
+public class Main extends Thread {  //Nuestro local
 	private final int maximoPersonas = 20;
 	
 	
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+	public static void main(String[] args){
+		int personas = 0;
+		
+		ArrayList<Persona> Cola0 = new ArrayList<Persona>();
+		ArrayList<Persona> Cola1 = new ArrayList<Persona>();
 
+		System.out.println("Ingrese cantidad de dias");
+
+
+		Scanner scan = new Scanner(System.in);
+		int tiempo = scan.nextInt();
+		while(tiempo > 0 ){
+			Random rand = new Random();
+			int prioridad = rand.nextInt(2);
+			int monto = rand.nextInt(500000);
+			Persona P = new Persona(prioridad, monto);
+			personas++;
+
+			if(P.getPrioridad() == 0){
+				Cola0.add(P);
+			}else{
+				Cola1.add(P);
+			}
+			System.out.println("Prio "+P.getPrioridad() + "Monto "+P.getMonto());
+		tiempo--;
+		}
+		scan.close();
 	}
 
 }

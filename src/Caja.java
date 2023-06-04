@@ -1,7 +1,10 @@
 
+
+
+
 public class Caja {
 	final int MONTE_MAXIMO = 500000;
-	
+	private int numeroCaja;
 	private boolean atendiendo;
 	private int montoRecaudado;
 	private int montoTotalRecaudado;
@@ -9,8 +12,8 @@ public class Caja {
 	private int numeroCierres;
 	
 	
-	public Caja() {
-		
+	public Caja(int x) {
+		this.numeroCaja = x;
 	}
 	
 	public void setMontoCajaTotal(int a) {
@@ -33,7 +36,6 @@ public class Caja {
 		this.atendiendo = x;
 	}
 	
-	
 	public int getMontoCajaTotal() {
 		return this.montoTotalRecaudado;
 	}
@@ -52,5 +54,9 @@ public class Caja {
 	
 	public boolean getAtendiendo() {
 		return this.atendiendo;
+	}
+
+	public int getNumeroCaja(){
+		return this.numeroCaja;
 	}
 }
