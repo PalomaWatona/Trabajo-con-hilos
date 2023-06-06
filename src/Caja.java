@@ -2,7 +2,7 @@
 
 
 
-public class Caja {
+public class Caja extends Thread {
 	final int MONTE_MAXIMO = 500000;
 	private int numeroCaja;
 	private boolean atendiendo;
@@ -11,7 +11,11 @@ public class Caja {
 	private int personasAtendidas;
 	private int numeroCierres;
 	
-	
+	@Override
+	public void run(){
+		
+	}
+	 
 	public Caja(int x) {
 		this.numeroCaja = x;
 	}
