@@ -16,7 +16,11 @@ public class Caja extends Thread{
 	private int personasAtendidas;
 	private int numeroCierres;
 	
-	
+	@Override
+	public void run(){
+		System.out.println("aaaaaaaaa");
+	}
+	 
 	public Caja(int x) {
 		this.numeroCaja = x;
 	}
