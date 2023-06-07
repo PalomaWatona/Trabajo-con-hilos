@@ -13,7 +13,7 @@ public class Caja extends Thread {
 	
 	@Override
 	public void run(){
-		
+		System.out.println("aaaaaaaaa");
 	}
 	 
 	public Caja(int x) {
