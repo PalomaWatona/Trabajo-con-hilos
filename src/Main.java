@@ -45,12 +45,19 @@ public class Main extends Thread {  //Nuestro local
 			Persona P = new Persona(prioridad, monto);
 			personas++;
 
+			
 			if(P.getPrioridad() == 0){
 				Cola0.add(P);
 			}else{
 				Cola1.add(P);
 			}
-			System.out.println("Prio "+P.getPrioridad() + "Monto "+P.getMonto());
+
+			if(Cola0.size() % 3 == 0){
+				Caja test = new Caja(rand.nextInt(5));
+				test.start();
+			}
+
+			//System.out.println("Prio "+P.getPrioridad() + "Monto "+P.getMonto());
 		tiempo--;
 		}
 		scan.close();

@@ -1,8 +1,13 @@
 
+public class Caja extends Thread{
 
-
-
-public class Caja extends Thread {
+	public void run(){
+		System.out.println("Caja: "+this.numeroCaja);
+		System.out.println("Monto recaudado: "+this.montoRecaudado);
+		System.out.println("Monto total recaudado: "+this.montoTotalRecaudado);
+		System.out.println("Personas atendidas: "+this.personasAtendidas);
+		System.out.println("Atendiendo: "+this.atendiendo);
+	}
 	final int MONTE_MAXIMO = 500000;
 	private int numeroCaja;
 	private boolean atendiendo;
