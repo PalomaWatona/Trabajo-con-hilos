@@ -7,60 +7,76 @@ public class Main extends Thread {  //Nuestro local
 	
 	public static void main(String[] args){
 		int personas = 0;
-		Caja[] caja = new Caja[5]; 
+		//Caja[] caja = new Caja[5]; 
 		ArrayList<Persona> listaPersonas = new ArrayList<Persona>(); 
 		ArrayList<Persona> listaPersonasPrioridad = new ArrayList<Persona>(); 
 		int cant_personas = 0; 
 		int contador = 0; 
 		//Cajas disponibles
-		caja[0] = new Caja(1); 
+		/*caja[0] = new Caja(1); 
 		caja[1] = new Caja(2); 
 		caja[2] = new Caja(3); 
 		caja[3] = new Caja(4); 
-		caja[4] = new Caja(5); 
-		System.out.println(caja[0].MONTE_MAXIMO);
+		caja[4] = new Caja(5);*/
+		//System.out.println(caja[0].MONTE_MAXIMO);
 		
 		//Lista de personas en la cola
-		ArrayList<Persona> Cola0 = new ArrayList<Persona>();
-		ArrayList<Persona> Cola1 = new ArrayList<Persona>();
+		ArrayList<Persona> Cola = new ArrayList<Persona>();
+		//ArrayList<Persona> Cola1 = new ArrayList<Persona>();
 
-		System.out.println("Ingrese cantidad de dias");
+		System.out.println("Ingrese segundos de ejecucion");
 
 		//Cada dia tiene una duración de 2 minutos
+
 		Scanner scan = new Scanner(System.in);
-		int tiempo = scan.nextInt();
-		//Todo el sistema debe estar acá dentro
-		while(tiempo > 0 ){
+		int tiempo = scan.nextInt() * 1000;
+		
+
+		//while(tiempo > 0 ){
 			//Se abre una caja 
-			if(cant_personas % 3 == 0){ 
-				caja[contador].start(); //ERROR CUANDO LOS DIAS SON SUPERIRES A 5, YA QUE NO SE PUEDEN INICIAR LAS CAJAS MÁS DE UNA VEZ
-				contador++; 
-				if (contador == 5){ 
-					contador = 0; 
-				} 
-			}
-			Random rand = new Random();
-			int prioridad = rand.nextInt(2);
-			int monto = rand.nextInt(300000);
-			Persona P = new Persona(prioridad, monto);
-			personas++;
 
 			
-			if(P.getPrioridad() == 0){
-				Cola0.add(P);
-			}else{
-				Cola1.add(P);
+			//Persona P = new Persona(prioridad, monto);
+
+			Caja caja = new Caja(2);
+			caja.start();
+
+
+			// Generar personas cada 3 segundos
+			Thread threadGenerador = new Thread(() -> {
+				while (caja.getAbierto()) {
+					Random rand = new Random();
+					int prioridad = rand.nextInt(2);
+					int monto = rand.nextInt(300000);
+					Persona persona = new Persona(prioridad,monto);
+					caja.agregar(persona);
+	
+					try {
+						Thread.sleep(3000); // Esperar 3 segundos
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			});
+			threadGenerador.start();
+
+			// Esperar un tiempo antes de cerrar la caja
+			try {
+				Thread.sleep(tiempo); 
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 
-			if(Cola0.size() % 3 == 0){
-				Caja test = new Caja(rand.nextInt(5));
-				test.start();
-			}
+			caja.cerrar();
 
-			//System.out.println("Prio "+P.getPrioridad() + "Monto "+P.getMonto());
-		tiempo--;
-		}
-		scan.close();
+			try {
+				caja.join(); 
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		//}
+
+
 	}
 
 }
