@@ -1,48 +1,63 @@
-import java.util.Scanner;
-import java.util.ArrayList;
+
 import java.util.Random;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 //Las personas con prioridad 1 son las que tienen más prioridad
 public class Main extends Thread {  //Nuestro local
 	private final int maximoPersonas = 20;
 	
 	public static void main(String[] args){
-		int personas = 0;
-		//Caja[] caja = new Caja[5]; 
-		ArrayList<Persona> listaPersonas = new ArrayList<Persona>(); 
-		ArrayList<Persona> listaPersonasPrioridad = new ArrayList<Persona>(); 
-		int cant_personas = 0; 
-		int contador = 0; 
-		//Cajas disponibles
-		/*caja[0] = new Caja(1); 
-		caja[1] = new Caja(2); 
-		caja[2] = new Caja(3); 
-		caja[3] = new Caja(4); 
-		caja[4] = new Caja(5);*/
-		//System.out.println(caja[0].MONTE_MAXIMO);
-		
-		//Lista de personas en la cola
-		ArrayList<Persona> Cola = new ArrayList<Persona>();
-		//ArrayList<Persona> Cola1 = new ArrayList<Persona>();
+		BlockingQueue<Persona> Cola = new ArrayBlockingQueue<Persona>(20); //maximo de personas
+		Caja caja1 = new Caja(1, true,Cola);
 
-		System.out.println("Ingrese segundos de ejecucion");
+		Thread[] cajas = new Thread[5];
+		cajas[0] = new Thread(caja1);
 
-		//Cada dia tiene una duración de 2 minutos
+		for (int i = 1; i < 5; i++) {
+            cajas[i] = new Thread(new Caja(i + 1,false,Cola));
+        }
 
-		Scanner scan = new Scanner(System.in);
-		int tiempo = scan.nextInt() * 1000;
 		
 
-		//while(tiempo > 0 ){
-			//Se abre una caja 
+		int count = 1;
+		int c = 0;
+		while (true) {
+			Random rand = new Random();
+			Boolean prioridad = rand.nextBoolean();
+			int monto = rand.nextInt(300000);
+            Persona nueva = new Persona(prioridad, monto);
+            try {
+                Cola.add(nueva);
 
-			
-			//Persona P = new Persona(prioridad, monto);
+                System.out.println("Cliente " + count + " en cola - Dinero ingresado: $" + nueva.getMonto());
+                count++;
 
-			Caja caja = new Caja(2);
-			caja.start();
+                Thread.sleep(5000);
+
+                // Verificar si la cantidad de clientes es múltiplo de 3
+                if (count % 3 == 0) {
+                    // Abrir la siguiente caja cerrada
+                    for (int i = 1; i < 5; i++) {
+                        if (cajas[i].isAlive() == false) {
+							if (cajas[i].getState() == Thread.State.NEW) {
+								System.out.println("CAJA " + i);
+                        		cajas[i].start();
+								break;
+                    		}
+                        }
+                    }
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+		//caja.start();
 
 
 			// Generar personas cada 3 segundos
+			/* 
 			Thread threadGenerador = new Thread(() -> {
 				while (caja.getAbierto()) {
 					Random rand = new Random();
@@ -74,8 +89,8 @@ public class Main extends Thread {  //Nuestro local
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-		//}
 
+			*/
 
 	}
 

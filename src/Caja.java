@@ -1,8 +1,9 @@
-import java.util.ArrayList;
+
+import java.util.concurrent.BlockingQueue;
 
 public class Caja extends Thread{
 	final int MONTE_MAXIMO = 500000;
-	private ArrayList<Persona> lista;
+	private BlockingQueue<Persona> lista;
 	//private Persona persona;
 	private int numeroCaja;
 	public  boolean abierto;
@@ -16,41 +17,41 @@ public class Caja extends Thread{
 
 	@Override
 	public void run(){
-		while(abierto){
-			synchronized(lista){
-				while(lista.isEmpty()){
+		try{
+			if(!abierto){
+					abrir();
+				}
+				Persona temp = lista.take();
+					synchronized(lista){
+						while(lista.isEmpty()){
+							try{
+								lista.wait();
+							} catch(InterruptedException e){
+								e.printStackTrace();
+							}
+						}
+						
+						this.montoRecaudado += temp.getMonto();
+						System.out.println("MONTO RECAUDADO "+this.montoRecaudado );
+					}
 					try{
-						lista.wait();
+						Thread.sleep(2000);
 					} catch(InterruptedException e){
 						e.printStackTrace();
 					}
-				}
-				Persona temp = lista.remove(0);
-				this.montoRecaudado += temp.getMonto();
-				System.out.println("Atendiendo con dinero: "+ temp.getMonto());
-			}
-			try{
-				Thread.sleep(2000);
-			} catch(InterruptedException e){
-				e.printStackTrace();
-			}
+		}catch(InterruptedException e){
+			e.printStackTrace();
 		}
-		/* 
-		System.out.println("Caja: "+this.numeroCaja);
-		
-		System.out.println("Monto total recaudado: "+this.montoTotalRecaudado);
-		System.out.println("Personas atendidas: "+this.personasAtendidas);
-		System.out.println("Atendiendo: "+this.atendiendo);
-		*/
+		System.out.println("Caja "+this.numeroCaja);
 		System.out.println("Monto recaudado: "+this.montoRecaudado);
 	}
 	
 	
 	 
-	public Caja(int x) {
+	public Caja(int x, boolean abierto ,BlockingQueue<Persona> colas) {
 		this.numeroCaja = x;
-		this.abierto = true;
-		lista = new ArrayList<>();
+		this.abierto = abierto;
+		this.lista = colas;
 	}
 	
 	public void agregar(Persona p){
@@ -60,6 +61,9 @@ public class Caja extends Thread{
 		}
 	}
 
+	public void abrir(){
+		this.abierto = true;
+	}
 	public void cerrar() {
         abierto = false;
         synchronized (lista) {
